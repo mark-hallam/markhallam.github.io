@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAC v3.0 — Declarative Agent Compilation | Context Engineering for Autonomous AI Agents</title>
+<meta name="description" content="Declarative Agent Compilation (DAC) is a context engineering methodology — compiling human intent into autonomous AI agent execution plans with intelligent model routing.">
+<meta name="keywords" content="prompt compilation, context engineering, Claude Code, AI coding, agent-first, DAG, parallel execution, session packages, model routing, Opus, Sonnet, GYSOM">
+<meta name="author" content="Mark Hallam">
+<meta property="og:title" content="DAC v3.0 — Declarative Agent Compilation | Context Engineering for Autonomous AI Agents">
+<meta property="og:description" content="Compile human intent into autonomous AI execution plans with intelligent model routing. A context engineering methodology. Open source under MIT license.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://markhallam.com.au">
+<link rel="canonical" href="https://markhallam.com.au">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #1B4F72;
+  --navy-dark: #154360;
+  --blue: #2E86C1;
+  --blue-light: #D4E6F1;
+  --blue-pale: #EBF5FB;
+  --dark: #1C1C1C;
+  --body: #374151;
+  --muted: #6B7280;
+  --light-bg: #F8FAFC;
+  --code-bg: #F4F6F7;
+  --code-border: #D5DBDB;
+  --white: #FFFFFF;
+  --green: #27AE60;
+  --green-pale: #EAFAF1;
+  --amber: #F59E0B;
+  --amber-pale: #FFF8E1;
+  --max-w: 960px;
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: Georgia, 'Times New Roman', serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--body);
+  background: var(--white);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--blue); text-decoration: none; transition: color 0.2s; }
+a:hover { color: var(--navy); }
+
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+/* ── Navigation ───────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--blue-light);
+  padding: 0 24px;
+}
+nav .nav-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px;
+}
+nav .logo {
+  font-family: var(--font-ui); font-weight: 800; font-size: 20px;
+  color: var(--navy); letter-spacing: -0.5px;
+}
+nav .nav-links { display: flex; gap: 28px; list-style: none; }
+nav .nav-links a {
+  font-family: var(--font-ui); font-size: 14px; font-weight: 500;
+  color: var(--muted); transition: color 0.2s;
+}
+nav .nav-links a:hover { color: var(--navy); }
+
+.mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.mobile-toggle span { display: block; width: 20px; height: 2px; background: var(--navy); margin: 4px 0; transition: 0.3s; }
+
+/* ── Hero ─────────────────────────────────────────── */
+.hero {
+  padding: 140px 24px 80px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--blue-pale) 0%, var(--white) 100%);
+}
+.hero h1 {
+  font-family: var(--font-ui); font-size: 64px; font-weight: 800;
+  color: var(--navy); letter-spacing: -2px; margin-bottom: 12px;
+}
+.hero .tagline {
+  font-family: var(--font-ui); font-size: 20px; font-weight: 500;
+  color: var(--blue); margin-bottom: 8px;
+}
+.hero .subtitle {
+  font-family: var(--font-ui); font-size: 14px; font-weight: 500;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 2px;
+  margin-bottom: 28px;
+}
+.hero p {
+  max-width: 640px; margin: 0 auto 36px; font-size: 18px; color: var(--body);
+  line-height: 1.8;
+}
+.hero .cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-ui); font-size: 15px; font-weight: 600;
+  padding: 14px 28px; border-radius: 8px; border: none; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-primary { background: var(--navy); color: var(--white); }
+.btn-primary:hover { background: var(--navy-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(27,79,114,0.3); color: var(--white); }
+.btn-secondary { background: var(--white); color: var(--navy); border: 2px solid var(--navy); }
+.btn-secondary:hover { background: var(--blue-pale); transform: translateY(-1px); color: var(--navy); }
+
+/* ── Sections ─────────────────────────────────────── */
+section { padding: 80px 0; }
+section.alt-bg { background: var(--light-bg); }
+
+.section-header {
+  text-align: center; margin-bottom: 56px;
+}
+.section-header h2 {
+  font-family: var(--font-ui); font-size: 36px; font-weight: 700;
+  color: var(--navy); margin-bottom: 12px; letter-spacing: -0.5px;
+}
+.section-header p {
+  font-size: 17px; color: var(--muted); max-width: 600px; margin: 0 auto;
+}
+
+/* ── What Section ─────────────────────────────────── */
+.what-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px;
+}
+.what-card {
+  background: var(--white); border: 1px solid var(--blue-light);
+  border-radius: 12px; padding: 32px; transition: transform 0.2s, box-shadow 0.2s;
+}
+.what-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(27,79,114,0.08); }
+.what-card .icon {
+  width: 48px; height: 48px; background: var(--blue-pale); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; font-size: 22px;
+}
+.what-card h3 {
+  font-family: var(--font-ui); font-size: 18px; font-weight: 700;
+  color: var(--navy); margin-bottom: 10px;
+}
+.what-card p { font-size: 15px; color: var(--body); line-height: 1.65; }
+
+/* ── Pipeline ─────────────────────────────────────── */
+.pipeline {
+  display: flex; align-items: flex-start; gap: 0; position: relative;
+  overflow-x: auto; padding-bottom: 12px;
+}
+.pipeline-step {
+  flex: 1; min-width: 160px; text-align: center; position: relative;
+  padding: 0 8px;
+}
+.pipeline-step .step-num {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--navy); color: var(--white);
+  font-family: var(--font-ui); font-weight: 700; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 14px; position: relative; z-index: 2;
+}
+.pipeline-step h4 {
+  font-family: var(--font-ui); font-size: 14px; font-weight: 700;
+  color: var(--navy); margin-bottom: 6px;
+}
+.pipeline-step p {
+  font-size: 13px; color: var(--muted); line-height: 1.5;
+}
+.pipeline-step:not(:last-child)::after {
+  content: ''; position: absolute;
+  top: 22px; left: calc(50% + 22px); right: calc(-50% + 22px);
+  height: 2px; background: var(--blue-light); z-index: 1;
+}
+
+/* ── Execution Demo ───────────────────────────────── */
+.exec-demo {
+  background: var(--dark); border-radius: 12px; padding: 28px 32px;
+  font-family: var(--font-mono); font-size: 14px; color: #E5E7EB;
+  line-height: 1.9; overflow-x: auto; margin-top: 40px;
+  border: 1px solid #374151;
+}
+.exec-demo .comment { color: #6B7280; }
+.exec-demo .layer { color: #60A5FA; font-weight: 600; }
+.exec-demo .session { color: #34D399; }
+.exec-demo .arrow { color: #F59E0B; }
+.exec-demo .pipe { color: #A78BFA; }
+.exec-demo .meta { color: #9CA3AF; }
+.exec-demo .model-tag { color: #F472B6; font-size: 12px; }
+
+/* ── Get Started / Code Blocks ────────────────────── */
+.tabs { display: flex; gap: 0; margin-bottom: 0; }
+.tab-btn {
+  font-family: var(--font-ui); font-size: 14px; font-weight: 600;
+  padding: 12px 24px; border: 1px solid var(--code-border);
+  background: var(--code-bg); color: var(--muted); cursor: pointer;
+  border-bottom: none; border-radius: 8px 8px 0 0; transition: all 0.2s;
+}
+.tab-btn.active { background: var(--white); color: var(--navy); border-bottom: 1px solid var(--white); margin-bottom: -1px; position: relative; z-index: 2; }
+.tab-btn:not(.active):hover { background: var(--blue-pale); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.code-wrapper {
+  position: relative; border: 1px solid var(--code-border);
+  border-radius: 0 8px 8px 8px; overflow: hidden;
+}
+.code-block {
+  background: var(--white); padding: 24px;
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.7;
+  color: var(--dark); overflow-x: auto; max-height: 500px; overflow-y: auto;
+  white-space: pre-wrap; word-wrap: break-word;
+}
+.copy-btn {
+  position: absolute; top: 12px; right: 12px; z-index: 5;
+  font-family: var(--font-ui); font-size: 12px; font-weight: 600;
+  padding: 6px 14px; border-radius: 6px;
+  background: var(--navy); color: var(--white); border: none; cursor: pointer;
+  transition: all 0.2s; opacity: 0.9;
+}
+.copy-btn:hover { opacity: 1; transform: scale(1.02); }
+.copy-btn.copied { background: #059669; }
+
+.setup-instructions {
+  background: var(--blue-pale); border-radius: 12px; padding: 24px 28px;
+  margin-bottom: 32px;
+}
+.setup-instructions h3 {
+  font-family: var(--font-ui); font-size: 16px; font-weight: 700;
+  color: var(--navy); margin-bottom: 8px;
+}
+.setup-instructions p { font-size: 15px; color: var(--body); }
+.setup-instructions code {
+  background: var(--white); padding: 2px 6px; border-radius: 4px;
+  font-family: var(--font-mono); font-size: 13px; color: var(--navy);
+}
+
+/* ── Download Section ─────────────────────────────── */
+.download-card {
+  text-align: center; background: var(--white); border: 2px solid var(--blue-light);
+  border-radius: 16px; padding: 48px 32px; max-width: 560px; margin: 0 auto;
+}
+.download-card .file-icon {
+  font-size: 48px; margin-bottom: 16px;
+}
+.download-card h3 {
+  font-family: var(--font-ui); font-size: 22px; font-weight: 700;
+  color: var(--navy); margin-bottom: 8px;
+}
+.download-card .meta {
+  font-family: var(--font-ui); font-size: 14px; color: var(--muted);
+  margin-bottom: 24px;
+}
+.download-card .btn { font-size: 16px; padding: 16px 36px; }
+
+/* ── Comparison Section ──────────────────────────── */
+.comparison-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  margin-top: 40px;
+}
+.comparison-card {
+  background: var(--white); border-radius: 12px; padding: 28px;
+  border: 1px solid var(--blue-light);
+}
+.comparison-card h3 {
+  font-family: var(--font-ui); font-size: 17px; font-weight: 700;
+  margin-bottom: 12px;
+}
+.comparison-card p {
+  font-size: 15px; color: var(--body); line-height: 1.65;
+}
+.comparison-card .tag {
+  display: inline-block; font-family: var(--font-ui); font-size: 11px;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  padding: 4px 10px; border-radius: 4px; margin-bottom: 12px;
+}
+.tag-dac { background: var(--blue-pale); color: var(--navy); }
+.tag-sonnet { background: var(--green-pale); color: var(--green); }
+.tag-both { background: var(--amber-pale); color: #92400E; }
+
+.benchmark-table {
+  width: 100%; font-family: var(--font-ui); font-size: 14px;
+  border-collapse: collapse; margin-top: 24px;
+}
+.benchmark-table th {
+  text-align: left; padding: 10px 14px; color: var(--navy);
+  border-bottom: 2px solid var(--blue-light); font-weight: 700;
+}
+.benchmark-table td {
+  padding: 10px 14px; border-bottom: 1px solid var(--blue-light);
+}
+.benchmark-table .highlight { color: var(--green); font-weight: 600; }
+
+/* ── Contact Form ─────────────────────────────────── */
+.contact-form {
+  max-width: 560px; margin: 0 auto;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block; font-family: var(--font-ui); font-size: 14px;
+  font-weight: 600; color: var(--navy); margin-bottom: 6px;
+}
+.form-group input, .form-group textarea {
+  width: 100%; padding: 12px 16px; border: 1px solid var(--code-border);
+  border-radius: 8px; font-family: var(--font-body); font-size: 15px;
+  color: var(--dark); transition: border-color 0.2s; background: var(--white);
+}
+.form-group input:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(46,134,193,0.1);
+}
+.form-group textarea { min-height: 140px; resize: vertical; }
+
+/* ── Footer ───────────────────────────────────────── */
+footer {
+  background: var(--navy-dark); color: var(--white); padding: 48px 24px 32px;
+}
+footer .footer-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: 32px;
+}
+footer .footer-brand h3 {
+  font-family: var(--font-ui); font-size: 20px; font-weight: 800;
+  margin-bottom: 8px;
+}
+footer .footer-brand p { font-size: 14px; color: #93C5FD; max-width: 320px; }
+footer .social-links { display: flex; gap: 20px; margin-top: 16px; }
+footer .social-links a {
+  color: #93C5FD; font-family: var(--font-ui); font-size: 14px;
+  font-weight: 500; transition: color 0.2s;
+}
+footer .social-links a:hover { color: var(--white); }
+footer .footer-legal {
+  text-align: right;
+}
+footer .footer-legal p {
+  font-family: var(--font-ui); font-size: 13px; color: #93C5FD;
+  margin-bottom: 4px;
+}
+
+/* ── Responsive ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 40px; letter-spacing: -1px; }
+  .hero .tagline { font-size: 17px; }
+  .hero p { font-size: 16px; }
+  .what-grid { grid-template-columns: 1fr; gap: 20px; }
+  .comparison-grid { grid-template-columns: 1fr; }
+  .pipeline { flex-direction: column; align-items: center; }
+  .pipeline-step { min-width: auto; width: 100%; max-width: 280px; }
+  .pipeline-step:not(:last-child)::after { display: none; }
+  nav .nav-links { display: none; }
+  nav .nav-links.open {
+    display: flex; flex-direction: column; position: absolute;
+    top: 60px; left: 0; right: 0; background: var(--white);
+    padding: 16px 24px; border-bottom: 1px solid var(--blue-light);
+    gap: 12px;
+  }
+  .mobile-toggle { display: block; }
+  footer .footer-inner { flex-direction: column; text-align: center; }
+  footer .footer-legal { text-align: center; }
+  footer .social-links { justify-content: center; }
+  .section-header h2 { font-size: 28px; }
+  section { padding: 56px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Navigation ──────────────────────────────────── -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">DAC</a>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links">
+      <li><a href="#what">What</a></li>
+      <li><a href="#who">Who It's For</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#start">Get Started</a></li>
+      <li><a href="#v3">v3 Changes</a></li>
+      <li><a href="#comparison">vs Sonnet 4.6</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="#lineage">Lineage</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="https://github.com/mark-hallam/markhallam-website" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <p class="subtitle">Context Engineering &bull; Open Source &bull; MIT License &bull; v3.0 &bull; <span style="opacity:0.7">formerly GYSOM</span></p>
+    <h1>Declarative Agent Compilation</h1>
+    <p class="tagline">Declare intent. Compile sessions. Execute autonomously.</p>
+    <p>A context engineering methodology that compiles human intent into autonomous AI agent execution plans with intelligent model routing, effort-aware dispatch, and fully autonomous phase progression. Two messages to compile. One command to execute. Zero stops in between. Tuned for Claude Opus 4.6 and Sonnet 4.6.</p>
+    <div class="cta-group">
+      <a href="#start" class="btn btn-primary">Get Started</a>
+      <a href="https://github.com/mark-hallam/markhallam-website" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── What Is DAC? ──────────────────────────────── -->
+<section id="what">
+  <div class="container">
+    <div class="section-header">
+      <h2>What Is DAC?</h2>
+      <p>A context engineering methodology that treats AI coding agents as compilation targets, not conversational partners.</p>
+    </div>
+    <div class="what-grid">
+      <div class="what-card">
+        <div class="icon">&#x1F6AB;</div>
+        <h3>The Problem</h3>
+        <p>Conversational prompting degrades as projects grow. Context windows exhaust, agents pause for decisions mid-execution, and parallelisable work runs sequentially. Hours are lost to interruptions, manual decomposition, and paying Opus prices for tasks Sonnet can handle.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">&#x2699;&#xFE0F;</div>
+        <h3>DAC</h3>
+        <p>The methodology introduces declarative agent compilation as a context engineering pattern. You provide complete input once, and the methodology compiles it into sized, verified session packages with explicit file paths, dependency graphs, model-tier routing, effort-aware dispatch, and conflict-free parallel execution.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">&#x26A1;</div>
+        <h3>The Result</h3>
+        <p>A single prompt triggers autonomous layer-by-layer execution. Sessions cascade through parallel branches as subagents, each assigned the optimal model tier and effort level, self-verifying on completion. Example: 34 sessions across 8 layers with up to 7 concurrent branches, all from one entry point:</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Who It's For ─────────────────────────────────── -->
+<section id="who" class="alt-bg">
+  <div class="container">
+    <div class="section-header">
+      <h2>Who It's For</h2>
+      <p>DAC benefits anyone building with AI coding agents. Here's how it helps at every level.</p>
+    </div>
+    <div class="what-grid">
+      <div class="what-card">
+        <div class="icon">&#x1F680;</div>
+        <h3>Solo Developers</h3>
+        <p>Stop babysitting your agent through 50 back-and-forth messages. Describe your project once, answer the decision batch, and walk away while sessions execute in parallel. What used to take a full day of interrupted prompting now runs autonomously while you do something else.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">&#x1F3D7;&#xFE0F;</div>
+        <h3>Founders &amp; Non-Technical Builders</h3>
+        <p>You don't need to know how to code or how to structure prompts. Describe what you want built in plain language. DAC harvests every decision upfront with recommended defaults, then compiles the entire build into executable sessions. You get a working project without needing to manage the technical details.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">&#x1F465;</div>
+        <h3>Development Teams</h3>
+        <p>The methodology's session packages, CLAUDE.md source of truth, and conflict matrices give teams a shared, version-controlled structure for AI-assisted builds. Every team member works from the same architecture decisions. No drift. No conflicting assumptions. No "I thought we were using Postgres."</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">&#x23F1;&#xFE0F;</div>
+        <h3>Speed-Focused Builders</h3>
+        <p>Parallel execution is the headline feature. Instead of building features one at a time, DAC dispatches independent sessions simultaneously across execution layers. A 34-session project doesn't take 34x the time &mdash; sessions in the same layer complete concurrently, collapsing total build time dramatically.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">&#x1F4B0;</div>
+        <h3>Cost-Conscious Teams</h3>
+        <p>v3 introduces intelligent model routing. Foundation and integration sessions run on Opus 4.6 for maximum quality. Independent features, tests, and UI components run on Sonnet 4.6 at 40% lower cost per session. A typical build sees 60-70% of sessions on Sonnet without quality loss. Every session includes a cost estimate.</p>
+      </div>
+      <div class="what-card">
+        <div class="icon">&#x1F504;</div>
+        <h3>Iterators &amp; Evolvers</h3>
+        <p>Projects change. DAC handles iteration through delta sessions &mdash; only the sessions affected by a change are regenerated. The CLAUDE.md is version-incremented, an impact report shows exactly what's affected versus untouched, and a new execution map covers only the sessions that need to re-run. No full rebuilds for a scope change.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ─────────────────────────────────── -->
+<section id="how">
+  <div class="container">
+    <div class="section-header">
+      <h2>How It Works</h2>
+      <p>A five-phase prompt compilation pipeline from human intent to autonomous execution.</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-num">1</div>
+        <h4>Decision Harvesting</h4>
+        <p>Extract every decision upfront. Tech stack, design, business logic, scope, model budget preference. Batch with recommended defaults. Human answers once.</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">2</div>
+        <h4>DAG Analysis</h4>
+        <p>Analyse all tasks as a Directed Acyclic Graph. Map dependencies. Identify parallel workstreams. Calculate critical path. Assign model tier and effort level to each task.</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">3</div>
+        <h4>Session Packages</h4>
+        <p>Decompose DAG into sized sessions. Target 15-25 files each. Self-contained with model assignment, token budget, cost estimate, and explicit file paths.</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">4</div>
+        <h4>Parallel Execution</h4>
+        <p>Conflict matrix ensures zero file collisions. Sessions dispatch as parallel subagents at their assigned model tier. Layers cascade autonomously from a single orchestrator.</p>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">5</div>
+        <h4>Verification</h4>
+        <p>Every session ends with mandatory type check, lint, test, build, and structured handoff state. Auto-retry on failure with Sonnet-to-Opus escalation for persistent issues.</p>
+      </div>
+    </div>
+
+    <!-- Execution demo -->
+    <div class="exec-demo">
+      <div><span class="comment">// Real execution map: 34 sessions, 8 layers, single entry point, model-routed</span></div>
+      <div><span class="layer">L0:</span> <span class="session">S-01</span> <span class="arrow">&rarr;</span> <span class="session">S-02</span> <span class="model-tag">[Opus|max]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(sequential, foundation)</span></div>
+      <div><span class="layer">L1:</span> <span class="session">S-03</span> <span class="pipe">|</span> <span class="session">S-04</span> <span class="pipe">|</span> <span class="session">S-05</span> <span class="pipe">|</span> <span class="session">S-06</span> <span class="model-tag">[Sonnet|med]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;(4 parallel)</span></div>
+      <div><span class="layer">L2:</span> <span class="session">S-07</span> <span class="pipe">|</span> <span class="session">S-08</span> <span class="pipe">|</span> <span class="session">S-09</span> <span class="model-tag">[Sonnet|med]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3 parallel)</span></div>
+      <div><span class="layer">L3:</span> <span class="session">S-10</span> <span class="pipe">|</span> <span class="session">S-11</span> <span class="pipe">|</span> <span class="session">S-12</span> <span class="pipe">|</span> <span class="session">S-13</span> <span class="pipe">|</span> <span class="session">S-14</span> <span class="model-tag">[mixed]</span> <span class="meta">&nbsp;&nbsp;(5 parallel)</span></div>
+      <div><span class="layer">L4A:</span> <span class="session">S-15</span> <span class="pipe">|</span> <span class="session">S-16</span> <span class="pipe">|</span> <span class="session">S-17</span> <span class="pipe">|</span> <span class="session">S-18</span> <span class="model-tag">[Sonnet|med]</span> <span class="meta">&nbsp;&nbsp;&nbsp;(4 parallel)</span></div>
+      <div><span class="layer">L4B:</span> <span class="session">S-19</span> <span class="arrow">&rarr;</span> <span class="session">S-20</span> <span class="pipe">|</span> <span class="session">S-21</span> <span class="model-tag">[Opus|high]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(integration)</span></div>
+      <div><span class="layer">L5:</span> <span class="session">S-22</span> <span class="pipe">|</span> <span class="session">S-23</span> <span class="pipe">|</span> <span class="session">S-24</span> <span class="pipe">|</span> <span class="session">S-25</span> <span class="pipe">|</span> <span class="session">S-26</span> <span class="pipe">|</span> <span class="session">S-27</span> <span class="pipe">|</span> <span class="session">S-28</span> <span class="model-tag">[Son]</span> <span class="meta">&nbsp;&nbsp;(7 parallel)</span></div>
+      <div><span class="layer">L6:</span> <span class="session">S-29</span> <span class="pipe">|</span> <span class="session">S-30</span> <span class="pipe">|</span> <span class="session">S-31</span> <span class="model-tag">[Opus|high]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3 integration)</span></div>
+      <div><span class="layer">L7:</span> <span class="session">S-32</span> <span class="pipe">|</span> <span class="session">S-33</span> <span class="pipe">|</span> <span class="session">S-34</span> <span class="model-tag">[Opus|low]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3 verification)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Get Started ──────────────────────────────────── -->
+<section id="start">
+  <div class="container">
+    <div class="section-header">
+      <h2>Get Started</h2>
+      <p>Two files. Copy, paste, build. No dependencies, no frameworks, no setup.</p>
+    </div>
+
+    <div class="setup-instructions">
+      <h3>Quick Setup</h3>
+      <p><strong>Step 1:</strong> Copy the <strong>Personal Preferences</strong> text below into <code>Claude Desktop &rarr; Settings &rarr; Personal Preferences</code>. This triggers the core DAC behaviours in every conversation.</p>
+      <p style="margin-top:8px"><strong>Step 2:</strong> Copy the <strong>Global Instructions</strong> text below into <code>Claude Desktop &rarr; Settings &rarr; Cowork &rarr; Global Instructions (EDIT)</code>. This provides the full methodology specification as ambient context from Cowork's output files ready for Code to get to work on.</p>
+    </div>
+
+    <div class="setup-instructions" style="margin-top:20px; background: var(--white); border: 2px solid var(--blue-light);">
+      <h3>How to Use</h3>
+      <p style="margin-bottom:12px">Once the two files above are in place, DAC activates automatically. The entire workflow is <strong>3 human messages total</strong> &mdash; a critical improvement over GYSOM v2 which required 6-40+ messages due to phase-by-phase approval stops:</p>
+      <p><strong>Message 1 &mdash; Describe your project in Cowork.</strong> Open a new task window in Claude Cowork, point it at your working folder, and describe the entire project you want to build. Don't hold back &mdash; include every feature, integration, and requirement. the compiler will respond with a decision batch containing every choice needed for the build, with recommended defaults.</p>
+      <p style="margin-top:10px"><strong>Message 2 &mdash; Answer the decision batch.</strong> Accept the defaults, override what you want, and hit send. After this response, the compiler produces <em>everything</em> in a single output: CLAUDE.md, execution map, conflict matrix, cost estimate, every session package, and the launch command. All saved directly to your working folder. <strong>No more phase-by-phase approval.</strong> No "shall I continue?" prompts. The compiler runs straight through Phases 2-5 autonomously &mdash; this was the #1 pain point fixed from GYSOM v2.</p>
+      <p style="margin-top:10px"><strong>Message 3 &mdash; Issue the launch command in Code.</strong> Open Claude Code pointing at the same folder. Tell it to execute the compiled session packages. The orchestrator (running Opus 4.6) reads the execution map, dispatches sessions as parallel subagents at their assigned model and effort levels, verifies each one on completion, and cascades through the entire build autonomously. Layers execute in sequence, sessions within each layer run in parallel. No further input needed.</p>
+      <p style="margin-top:14px; color: var(--muted); font-size: 14px; font-family: var(--font-ui);"><em>That's it. 3 messages. GYSOM v2 needed 6-40+ for the same result. Full autonomous execution with intelligent model routing.</em></p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('prefs')">Personal Preferences</button>
+      <button class="tab-btn" onclick="switchTab('global')">Global Instructions</button>
+    </div>
+
+    <!-- Personal Preferences -->
+    <div id="tab-prefs" class="tab-content active">
+      <div class="code-wrapper">
+        <button class="copy-btn" onclick="copyCode('prefs-code', this)">Copy</button>
+        <pre class="code-block" id="prefs-code">You operate as an agent-first prompt compiler using the DAC (Declarative Agent Compilation) v3.0 methodology (evolved from GYSOM v1/v2). Declarative agent compilation is the core pattern: you compile human intent into autonomous AI agent execution plans. Every project output must be optimized for autonomous Claude Code execution, never for human reading. This version is tuned for Claude Opus 4.6 and Sonnet 4.6 model capabilities including adaptive thinking, effort routing, model-tier assignment, compaction, and native subagent orchestration.
+
+**DECISION HARVESTING:** When I describe any project, your first response is ALWAYS a single batch of every decision needed (tech stack, design, scope, naming, business logic, integrations) with your recommended defaults marked. I answer once. You never ask questions again after that point.
+
+**AUTONOMOUS PHASE PROGRESSION:** After I respond to the decision batch, you MUST produce ALL remaining outputs (CLAUDE.md, execution map, conflict matrix, cost estimate, every session package, and launch command) in a single response. Do NOT stop between phases. Do NOT ask "shall I continue?" or "does this look right?" The entire compilation from decision response to launch command happens without any further human input. Two messages total: (1) my project description, (2) my decision batch response. After message 2, the next thing I do is open Claude Code.
+
+**SESSION DECOMPOSITION:** Never produce a single monolithic prompt. Decompose all work into numbered session packages (Session 1, Session 2, Session 3...) sized at &#x2264;25 files and &#x2264;3000 words of directives each. This prevents Claude Code context window exhaustion even with compaction enabled. More smaller sessions is always better than fewer larger ones.
+
+**MODEL-TIER ROUTING:** Every session package must include a model assignment. Use the DAG analysis to assign tiers:
+- **Opus 4.6** (`claude-opus-4-6`): Foundation sessions, integration sessions, complex architectural work, sessions touching 5+ interconnected modules
+- **Sonnet 4.6** (`claude-sonnet-4-6`): Independent feature sessions, test scaffolding, UI components, documentation, standalone API routes
+Default to Sonnet 4.6 unless the session requires deep reasoning or cross-module architectural decisions. Sonnet 4.6 matches Opus on SWE-bench (79.6% vs 80.8%) at 40% lower cost.
+
+**EFFORT-AWARE DISPATCH:** Every session package must include an effort level assignment:
+- `max`: Foundation sessions only (Layer 0), critical path sessions
+- `high`: Integration sessions, complex feature implementations
+- `medium`: Independent feature sessions, standard CRUD, UI pages (default for Sonnet 4.6)
+- `low`: Documentation, config files, simple scaffolding
+
+**PARALLEL EXECUTION:** Analyze task dependencies as a DAG (Directed Acyclic Graph). Group sessions into execution layers. Sessions in the same layer touch zero shared files and can run simultaneously as parallel subagents dispatched automatically by the orchestrator. Always produce a visual execution map showing layers and the exact cascade sequence.
+
+**SESSION PACKAGE FORMAT:** Every session must be self-contained and executable as a subagent task. Each session includes: model tier and effort level, compressed context (only what that session needs), prior state from completed sessions, numbered execution directives with explicit file paths, mandatory verification commands (tsc, eslint, vitest, build), and a structured JSON handoff state listing files created, exports, endpoints, and packages installed.
+
+**CLAUDE.MD GENERATION:** Always produce a project CLAUDE.md as the source of truth (tech stack, directory structure, coding standards, commands, architecture decisions). Include a model routing table showing which session types use Opus vs Sonnet. This is ambient context for every Claude Code session, not a session prompt. For large projects (5+ domains), split into domain-specific files (CLAUDE-FRONTEND.md, CLAUDE-BACKEND.md, etc.).
+
+**CONFLICT DETECTION:** Before approving parallel sessions, verify zero file overlap between them. Publish a conflict matrix. If conflicts exist, serialize or extract shared files into a prerequisite session. package.json is always Foundation-exclusive.
+
+**RECOVERY &amp; VERIFICATION:** Every session ends with verification commands. Sessions auto-retry up to 2 fix cycles on failure before producing a failure report. Downstream sessions halt until dependencies pass verification. Use adaptive thinking for verification passes &#x2014; the model decides how deeply to reason about failures.
+
+**COMPACTION AWARENESS:** The orchestrator agent should leverage context compaction for long-running coordination. Session packages remain sized for atomic execution, but the orchestrator can maintain state across many sessions without manual context management. Do not rely on compaction inside session agents &#x2014; keep sessions self-contained.
+
+**ITERATION:** When I request changes, produce only delta sessions affecting the change. Update CLAUDE.md version. Show an iteration impact report identifying affected vs unaffected sessions. Delta sessions inherit the model tier and effort level of the original session they replace.
+
+**COST TRACKING:** After compiling all session packages, produce a cost estimate table showing: sessions by model tier, estimated input/output tokens per session, per-session cost, and total build cost. Identify potential savings by downgrading specific sessions from Opus to Sonnet where quality impact is negligible.
+
+**OUTPUT ORDER:** Always: (1) Decision batch [ONLY STOP &#x2014; wait for my response] &#x2192; then in a SINGLE response without stopping: (2) CLAUDE.md with model routing table &#x2192; (3) Execution map with conflict matrix and cost estimate &#x2192; (4) Session packages with model/effort assignments &#x2192; (5) Single launch command for Claude Code. Steps 2-5 are produced automatically after I answer the decision batch. No intermediate approvals. No "shall I continue?" prompts.
+
+**GENERAL BEHAVIOR:** Always proceed with all proposed tasks at once, using maximum parallelism. Provide step-by-step instructions with clickable links where applicable. When relaying information I need to input, provide it in a copy-paste ready format. Specify interfaces and constraints, never write implementation code in session prompts &#x2014; Claude Code writes better code from constraints than from templates. Every token must earn its place guiding autonomous execution.</pre>
+      </div>
+    </div>
+
+    <!-- Global Instructions -->
+    <div id="tab-global" class="tab-content">
+      <div class="code-wrapper">
+        <button class="copy-btn" onclick="copyCode('global-code', this)">Copy</button>
+        <pre class="code-block" id="global-code"># Declarative Agent Compilation v3.0 &#x2014; Global Instructions
+
+&gt; A context engineering methodology that introduces prompt compilation &#x2014; compiling human intent into autonomous AI agent execution plans. Every output is optimized for autonomous Claude Code execution, never for human reading. Human input is batched upfront and eliminated from the critical path. Version 3.0 is tuned for Claude Opus 4.6 and Sonnet 4.6 model capabilities including adaptive thinking, effort routing, compaction, and native subagent orchestration.
+
+---
+
+## CORE PHILOSOPHY
+
+You are a **prompt compiler**, not an assistant. When a user describes a project, you do NOT produce a human-readable plan. You produce **machine-executable session packages** &#x2014; self-contained instruction sets that Claude Code dispatches as parallel subagents, cascading layer by layer through the DAG autonomously.
+
+**Four absolutes:**
+1. Never generate sequential task lists meant for humans to read and approve step-by-step
+2. Never assume a human will be present to answer questions mid-execution
+3. Never produce a single monolithic prompt that risks context window exhaustion
+4. Never assign the same model tier and effort level to every session &#x2014; route intelligently based on session complexity
+
+---
+
+## MODEL ROUTING
+
+DAC v3.0 leverages both Opus 4.6 and Sonnet 4.6 to optimize cost and quality across the execution DAG.
+
+### Model Assignment Rules
+
+| Session Type | Model | Effort | Rationale |
+|---|---|---|---|
+| Foundation (Layer 0) | Opus 4.6 | max | Architectural decisions, schema design, config &#x2014; errors here cascade everywhere |
+| Integration | Opus 4.6 | high | Cross-module wiring requires deep context tracking |
+| Complex features (5+ files) | Opus 4.6 | high | Benefits from Opus's superior long-context retrieval |
+| Independent features | Sonnet 4.6 | medium | Well-defined scope, Sonnet matches Opus on SWE-bench |
+| UI components / pages | Sonnet 4.6 | medium | Standard patterns, no deep reasoning needed |
+| Test scaffolding | Sonnet 4.6 | medium | Constraint-driven, deterministic output |
+| Documentation / config | Sonnet 4.6 | low | Minimal reasoning required |
+| Verification passes | Opus 4.6 | low | Quick type-check/lint/build confirmation |
+
+### Cost Implications
+- Opus 4.6: $5/$25 per million tokens (input/output)
+- Sonnet 4.6: $3/$15 per million tokens (input/output)
+- Typical build: 60-70% of sessions run on Sonnet at 40% cost reduction per session
+
+---
+
+## PHASE 1: INTAKE &amp; DECISION HARVESTING
+[Full methodology continues &#x2014; see the complete v3.0 Global Instructions document for all 5 phases, orchestrator directives, conflict detection, recovery protocol, verification criteria, and anti-patterns. Download or view the full specification on GitHub.]</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── What's New in v3 ───────────────────────────────── -->
+<section id="v3" class="alt-bg">
+  <div class="container">
+    <div class="section-header">
+      <h2>What's New in v3</h2>
+      <p>Built for Opus 4.6 and Sonnet 4.6. Intelligent model routing, effort-aware dispatch, and native orchestration.</p>
+    </div>
+
+    <div class="v2-intro" style="max-width:720px; margin:0 auto 48px; text-align:center;">
+      <p style="font-size:16px; color:var(--body); line-height:1.75;">v3 evolves the methodology from a manual copy-paste workflow into a fully orchestrated compilation pipeline. With Claude Opus 4.6's 128K output tokens, Sonnet 4.6's near-Opus SWE-bench performance, native subagent dispatch, and context compaction, the methodology now leverages model capabilities that didn't exist when v2 was written.</p>
+    </div>
+
+    <div class="what-grid">
+      <div class="what-card" style="border-left: 4px solid var(--blue);">
+        <div class="icon" style="background:var(--blue-pale);">&#x1F3AF;</div>
+        <h3>Model-Tier Routing</h3>
+        <p style="margin-bottom:16px; color:var(--muted); font-size:14px;">v2 ran every session on the same model. v3 assigns Opus or Sonnet per session based on complexity.</p>
+        <p>Foundation and integration sessions run on Opus 4.6 at max/high effort. Independent features, tests, and UI run on Sonnet 4.6 at medium effort. Sonnet 4.6 scores 79.6% on SWE-bench Verified (vs Opus's 80.8%) at 40% lower cost. A typical build sees 60-70% of sessions on Sonnet without quality loss.</p>
+      </div>
+
+      <div class="what-card" style="border-left: 4px solid var(--blue);">
+        <div class="icon" style="background:var(--blue-pale);">&#x1F916;</div>
+        <h3>Native Subagent Orchestration</h3>
+        <p style="margin-bottom:16px; color:var(--muted); font-size:14px;">v2 required manual copy-paste of session packages into separate terminals. v3 dispatches automatically.</p>
+        <p>The Claude Code orchestrator (running Opus 4.6) reads the execution map, dispatches sessions as parallel subagent tasks at their assigned model and effort levels, checks handoff states for verification results, and cascades through layers autonomously. One command to launch the entire build.</p>
+      </div>
+
+      <div class="what-card" style="border-left: 4px solid var(--blue);">
+        <div class="icon" style="background:var(--blue-pale);">&#x1F4CA;</div>
+        <h3>Cost Tracking &amp; Effort Routing</h3>
+        <p style="margin-bottom:16px; color:var(--muted); font-size:14px;">v2 had no visibility into build costs. v3 makes cost a first-class design constraint.</p>
+        <p>Every session includes a token budget and cost estimate. The execution map shows per-session and total build cost. Four effort levels (max, high, medium, low) map to adaptive thinking behaviour, ensuring documentation sessions don't burn Opus-level compute while foundation sessions get maximum reasoning depth.</p>
+      </div>
+    </div>
+
+    <div style="max-width:720px; margin:48px auto 0; background:var(--white); border:2px solid var(--blue-light); border-radius:12px; padding:28px 32px;">
+      <h3 style="font-family:var(--font-ui); font-size:18px; font-weight:700; color:var(--navy); margin-bottom:16px; text-align:center;">v2 &rarr; v3 Change Summary</h3>
+      <table style="width:100%; font-family:var(--font-ui); font-size:14px; border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--blue-light);">
+            <th style="text-align:left; padding:8px 12px; color:var(--navy);">Area</th>
+            <th style="text-align:left; padding:8px 12px; color:var(--muted);">v2</th>
+            <th style="text-align:left; padding:8px 12px; color:var(--green);">v3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Model Selection</td>
+            <td style="padding:8px 12px; color:var(--muted);">Single model for all sessions</td>
+            <td style="padding:8px 12px;">Opus/Sonnet routing per session</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Effort Levels</td>
+            <td style="padding:8px 12px; color:var(--muted);">Not supported</td>
+            <td style="padding:8px 12px;">max / high / medium / low per session</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Execution</td>
+            <td style="padding:8px 12px; color:var(--muted);">Manual copy-paste to terminals</td>
+            <td style="padding:8px 12px;">Automatic subagent dispatch</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Cost Visibility</td>
+            <td style="padding:8px 12px; color:var(--muted);">None</td>
+            <td style="padding:8px 12px;">Per-session and total cost estimates</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Session Size</td>
+            <td style="padding:8px 12px; color:var(--muted);">8-12 files, 2000 words</td>
+            <td style="padding:8px 12px;">15-25 files, 3000 words (128K output)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Recovery</td>
+            <td style="padding:8px 12px; color:var(--muted);">Same-model retry</td>
+            <td style="padding:8px 12px;">Sonnet &rarr; Opus escalation on failure</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Context Strategy</td>
+            <td style="padding:8px 12px; color:var(--muted);">Checkpoints + resume</td>
+            <td style="padding:8px 12px;">Compaction-aware orchestrator + atomic sessions</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Launch Flow</td>
+            <td style="padding:8px 12px; color:var(--muted);">Multi-step terminal workflow</td>
+            <td style="padding:8px 12px;">Single command &rarr; full autonomous build</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Phase Progression</td>
+            <td style="padding:8px 12px; color:var(--muted);">Stop after each phase for approval</td>
+            <td style="padding:8px 12px;">Autonomous &mdash; all phases in single response</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Human Messages</td>
+            <td style="padding:8px 12px; color:var(--muted);">6-40+ per project</td>
+            <td style="padding:8px 12px;">3 total (describe, decide, launch)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── DAC vs Sonnet 4.6 Comparison ──── -->
+<section id="comparison">
+  <div class="container">
+    <div class="section-header">
+      <h2>DAC vs Sonnet 4.6 Native</h2>
+      <p>Sonnet 4.6 is a massive leap forward. Here's where DAC still gives you an edge &mdash; and where the model now handles things on its own.</p>
+    </div>
+
+    <div style="max-width:720px; margin:0 auto 40px; text-align:center;">
+      <p style="font-size:16px; color:var(--body); line-height:1.75;">Claude Sonnet 4.6 (released February 17, 2026) brings a 1M-token context window, 79.6% SWE-bench Verified score, dramatically improved instruction following, and near-Opus performance across coding tasks. Many problems that v2 solved structurally are now handled natively by the model. But DAC still delivers measurable gains for complex, multi-session builds.</p>
+    </div>
+
+    <!-- Key Sonnet 4.6 benchmarks -->
+    <div style="max-width:720px; margin:0 auto 48px; background:var(--green-pale); border:2px solid #A3E4D7; border-radius:12px; padding:28px 32px;">
+      <h3 style="font-family:var(--font-ui); font-size:18px; font-weight:700; color:#1E8449; margin-bottom:16px; text-align:center;">Sonnet 4.6 Key Benchmarks</h3>
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th>Benchmark</th>
+            <th>Sonnet 4.6</th>
+            <th>vs Sonnet 4.5</th>
+            <th>vs Opus 4.6</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SWE-bench Verified</td>
+            <td class="highlight">79.6%</td>
+            <td>+2.4pp (from 77.2%)</td>
+            <td>Near parity (80.8%)</td>
+          </tr>
+          <tr>
+            <td>Terminal-Bench 2.0</td>
+            <td class="highlight">59.1%</td>
+            <td>+8.1pp (from 51.0%)</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td>OSWorld-Verified</td>
+            <td class="highlight">72.5%</td>
+            <td>+11.1pp (from 61.4%)</td>
+            <td>Near parity (72.7%)</td>
+          </tr>
+          <tr>
+            <td>Context Window</td>
+            <td class="highlight">1M tokens</td>
+            <td>2x (from 200K)</td>
+            <td>Same as Opus</td>
+          </tr>
+          <tr>
+            <td>Heavy Reasoning</td>
+            <td class="highlight">77%</td>
+            <td>+15pp (from 62%)</td>
+            <td>&mdash;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Comparison cards -->
+    <div class="comparison-grid">
+      <div class="comparison-card">
+        <span class="tag tag-dac">DAC Advantage</span>
+        <h3 style="color:var(--navy);">Parallel Multi-Session Dispatch</h3>
+        <p>Even with a 1M-token context window, a single agent can only work on one file at a time. DAC dispatches 3-7 independent sessions simultaneously as parallel subagents, collapsing build time proportionally. A 34-session build completes in 8 layer-passes, not 34 sequential sessions.</p>
+      </div>
+      <div class="comparison-card">
+        <span class="tag tag-dac">DAC Advantage</span>
+        <h3 style="color:var(--navy);">Cost Optimization via Model Routing</h3>
+        <p>Sonnet 4.6 costs $3/$15 per million tokens vs Opus at $5/$25. DAC routes 60-70% of sessions to Sonnet where its 79.6% SWE-bench score is more than sufficient, reserving Opus for foundation and integration work. On a typical complex build, this saves 30-40% on total API spend.</p>
+      </div>
+      <div class="comparison-card">
+        <span class="tag tag-dac">DAC Advantage</span>
+        <h3 style="color:var(--navy);">Structured Verification Gates</h3>
+        <p>Native agents can skip verification when under context pressure. DAC makes type-check, lint, test, and build verification mandatory between every session. Failures halt downstream sessions automatically. The recovery protocol escalates Sonnet failures to Opus rather than silently proceeding.</p>
+      </div>
+      <div class="comparison-card">
+        <span class="tag tag-dac">DAC Advantage</span>
+        <h3 style="color:var(--navy);">Conflict-Free Architecture</h3>
+        <p>The conflict matrix guarantees zero file collisions between parallel sessions. Without this, two agents modifying the same file simultaneously create merge conflicts and race conditions. DAC eliminates this class of error by design before execution begins.</p>
+      </div>
+      <div class="comparison-card">
+        <span class="tag tag-sonnet">Sonnet 4.6 Closes Gap</span>
+        <h3 style="color:var(--green);">Context Window Exhaustion</h3>
+        <p>The 1M-token context window with built-in compaction dramatically reduces the risk of mid-session context loss. v2's checkpoint-and-resume protocol addressed this structurally; Sonnet 4.6 now handles it natively. v3 leverages this by increasing session size targets from 8-12 to 15-25 files.</p>
+      </div>
+      <div class="comparison-card">
+        <span class="tag tag-sonnet">Sonnet 4.6 Closes Gap</span>
+        <h3 style="color:var(--green);">Instruction Following</h3>
+        <p>70% of users prefer Sonnet 4.6 over Sonnet 4.5 on instruction following. The model reads context before editing, tightens logic instead of doubling it, and avoids overengineering. Sessions that previously needed Opus-level precision to complete reliably now succeed on Sonnet.</p>
+      </div>
+      <div class="comparison-card">
+        <span class="tag tag-both">Compound Gain</span>
+        <h3 style="color:#92400E;">DAC + Better Models</h3>
+        <p>DAC and Sonnet 4.6 aren't competing &mdash; they compound. Better models execute sessions more reliably. Better session structure gives models clearer constraints. The result: fewer recovery cycles, higher first-pass verification rates, and faster end-to-end build times than either approach alone.</p>
+      </div>
+      <div class="comparison-card">
+        <span class="tag tag-both">Compound Gain</span>
+        <h3 style="color:#92400E;">Decision Harvesting Eliminates Drift</h3>
+        <p>No matter how good the model, it can't read your mind about tech stack choices, naming conventions, or business logic. The methodology's upfront decision batch eliminates the #1 source of agent failure: ambiguous requirements leading to inconsistent decisions across a multi-file build. This benefit is model-independent.</p>
+      </div>
+    </div>
+
+    <!-- Expected gains summary -->
+    <div style="max-width:720px; margin:48px auto 0; background:var(--blue-pale); border-radius:12px; padding:28px 32px;">
+      <h3 style="font-family:var(--font-ui); font-size:18px; font-weight:700; color:var(--navy); margin-bottom:16px; text-align:center;">Expected Gains from DAC + Sonnet 4.6</h3>
+      <table style="width:100%; font-family:var(--font-ui); font-size:14px; border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--blue-light);">
+            <th style="text-align:left; padding:8px 12px; color:var(--navy);">Metric</th>
+            <th style="text-align:left; padding:8px 12px; color:var(--muted);">Conversational Prompting</th>
+            <th style="text-align:left; padding:8px 12px; color:var(--green);">With PC v3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Build Time (complex project)</td>
+            <td style="padding:8px 12px; color:var(--muted);">Sequential, hours of babysitting</td>
+            <td style="padding:8px 12px;">Parallel dispatch, 3-5x faster</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">API Cost</td>
+            <td style="padding:8px 12px; color:var(--muted);">All Opus (or all Sonnet)</td>
+            <td style="padding:8px 12px;">30-40% savings via model routing</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">First-Pass Success Rate</td>
+            <td style="padding:8px 12px; color:var(--muted);">~60-70% (ambiguity drift)</td>
+            <td style="padding:8px 12px;">~85-95% (decisions pre-harvested)</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--blue-light);">
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">Human Intervention</td>
+            <td style="padding:8px 12px; color:var(--muted);">Continuous throughout build</td>
+            <td style="padding:8px 12px;">Once (decision batch), then autonomous</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px; font-weight:600; color:var(--navy);">File Conflicts</td>
+            <td style="padding:8px 12px; color:var(--muted);">Common with parallel agents</td>
+            <td style="padding:8px 12px;">Zero (conflict matrix enforced)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── Download ─────────────────────────────────────── -->
+<section id="download" class="alt-bg">
+  <div class="container">
+    <div class="section-header">
+      <h2>Download</h2>
+      <p>The complete DAC v3.0 methodology files, ready to use.</p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:720px; margin:0 auto;">
+      <div class="download-card">
+        <div class="file-icon">&#x1F4C4;</div>
+        <h3>Global Instructions</h3>
+        <p class="meta">Markdown (.md) &bull; v3.0 &bull; February 2026</p>
+        <a href="DAC-v3.0-Global-Instructions.md" class="btn btn-primary" download>Download</a>
+      </div>
+      <div class="download-card">
+        <div class="file-icon">&#x2699;&#xFE0F;</div>
+        <h3>Personal Preferences</h3>
+        <p class="meta">Markdown (.md) &bull; v3.0 &bull; February 2026</p>
+        <a href="DAC-v3.0-Personal-Preferences.md" class="btn btn-primary" download>Download</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Lineage ──────────────────────────────────────── -->
+<section id="lineage" class="alt-bg">
+  <div class="container">
+    <div class="section-header">
+      <h2>Lineage: From GYSOM to DAC</h2>
+      <p>DAC v3.0 is the third generation of a methodology originally published as GYSOM &mdash; "Get Your Skates On Mate."</p>
+    </div>
+
+    <div style="max-width:720px; margin:0 auto;">
+      <!-- Timeline -->
+      <div style="display:grid; grid-template-columns:80px 1fr; gap:0; font-family:var(--font-ui);">
+        <!-- v1 -->
+        <div style="text-align:center; padding:0 0 32px;">
+          <div style="width:48px; height:48px; border-radius:50%; background:var(--navy); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; margin:0 auto;">v1</div>
+          <div style="width:2px; height:100%; background:var(--blue-light); margin:8px auto 0;"></div>
+        </div>
+        <div style="padding:0 0 32px;">
+          <h3 style="font-size:17px; font-weight:700; color:var(--navy); margin-bottom:4px;">GYSOM v1 &mdash; "Get Your Skates On Mate"</h3>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:8px;">2025 &bull; Original release</p>
+          <p style="font-size:15px; color:var(--body); line-height:1.65;">Introduced the core concepts: prompt compilation, DAG-based session decomposition, parallel execution layers, conflict detection, self-contained session packages, and the decision harvesting pattern. Proved the concept on a 34-session, 8-layer autonomous build. Required manual copy-paste of session packages into separate Claude Code terminals.</p>
+          <p style="margin-top:8px;"><a href="https://github.com/mark-hallam/gysom" target="_blank" rel="noopener" style="font-size:14px; font-weight:600;">View GYSOM v1/v2 on GitHub &rarr;</a></p>
+        </div>
+
+        <!-- v2 -->
+        <div style="text-align:center; padding:0 0 32px;">
+          <div style="width:48px; height:48px; border-radius:50%; background:var(--navy); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; margin:0 auto;">v2</div>
+          <div style="width:2px; height:100%; background:var(--blue-light); margin:8px auto 0;"></div>
+        </div>
+        <div style="padding:0 0 32px;">
+          <h3 style="font-size:17px; font-weight:700; color:var(--navy); margin-bottom:4px;">GYSOM v2 &mdash; Reliability Fixes</h3>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:8px;">February 2026 &bull; Based on real-world 34-session build feedback</p>
+          <p style="font-size:15px; color:var(--body); line-height:1.65;">Fixed three failure modes from v1: lint-staged running on all staged files (scoped commit strategy), context window exhaustion (smaller sessions + checkpoint resume), and agent incompleteness (file manifests + completion audit). Still required manual phase-by-phase progression in Cowork &mdash; the compiler would stop after each phase waiting for human approval.</p>
+        </div>
+
+        <!-- v3 -->
+        <div style="text-align:center; padding:0 0 0;">
+          <div style="width:48px; height:48px; border-radius:50%; background:var(--blue); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; margin:0 auto;">v3</div>
+        </div>
+        <div style="padding:0;">
+          <h3 style="font-size:17px; font-weight:700; color:var(--blue); margin-bottom:4px;">DAC v3.0 &mdash; Declarative Agent Compilation</h3>
+          <p style="font-size:13px; color:var(--muted); margin-bottom:8px;">February 2026 &bull; Renamed &amp; evolved for Opus 4.6 / Sonnet 4.6</p>
+          <p style="font-size:15px; color:var(--body); line-height:1.65;">Full rename from GYSOM to Declarative Agent Compilation (DAC) &mdash; the name describes exactly what the methodology does. Key additions: intelligent model routing (Opus for foundation/integration, Sonnet for independent features at 40% lower cost), effort-aware dispatch (max/high/medium/low), native subagent orchestration (no more manual copy-paste), cost tracking with per-session estimates, and <strong>fully autonomous phase progression</strong> &mdash; after the decision batch, all remaining phases compile in a single response with zero human intervention.</p>
+          <p style="margin-top:8px;"><a href="https://github.com/mark-hallam/markhallam-website" target="_blank" rel="noopener" style="font-size:14px; font-weight:600;">View DAC v3.0 on GitHub &rarr;</a></p>
+        </div>
+      </div>
+
+      <!-- Key improvement callout -->
+      <div style="margin-top:40px; background:var(--white); border:2px solid var(--blue-light); border-radius:12px; padding:24px 28px;">
+        <h3 style="font-family:var(--font-ui); font-size:16px; font-weight:700; color:var(--navy); margin-bottom:12px; text-align:center;">Human Interaction Points by Version</h3>
+        <table style="width:100%; font-family:var(--font-ui); font-size:14px; border-collapse:collapse;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--blue-light);">
+              <th style="text-align:left; padding:8px 12px; color:var(--navy);">Stage</th>
+              <th style="text-align:center; padding:8px 12px; color:var(--muted);">v1</th>
+              <th style="text-align:center; padding:8px 12px; color:var(--muted);">v2</th>
+              <th style="text-align:center; padding:8px 12px; color:var(--green);">v3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--blue-light);">
+              <td style="padding:8px 12px;">Project description</td>
+              <td style="padding:8px 12px; text-align:center;">1 message</td>
+              <td style="padding:8px 12px; text-align:center;">1 message</td>
+              <td style="padding:8px 12px; text-align:center;">1 message</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--blue-light);">
+              <td style="padding:8px 12px;">Decision batch response</td>
+              <td style="padding:8px 12px; text-align:center;">1 message</td>
+              <td style="padding:8px 12px; text-align:center;">1 message</td>
+              <td style="padding:8px 12px; text-align:center;">1 message</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--blue-light);">
+              <td style="padding:8px 12px;">Phase-by-phase approvals</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--muted);">3-5 messages</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--muted);">3-5 messages</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--green); font-weight:600;">0 messages</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--blue-light);">
+              <td style="padding:8px 12px;">Session copy-paste</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--muted);">1 per session</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--muted);">1 per session</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--green); font-weight:600;">0 (auto-dispatch)</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; font-weight:600;">Total human messages</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--muted); font-weight:600;">6-40+</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--muted); font-weight:600;">6-40+</td>
+              <td style="padding:8px 12px; text-align:center; color:var(--green); font-weight:700;">3</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:13px; color:var(--muted); text-align:center; margin-top:12px; font-family:var(--font-ui);">v3 total: 1 project description + 1 decision response + 1 launch command in Code = 3 messages</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contact ──────────────────────────────────────── -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <h2>Contact</h2>
+      <p>Questions, feedback, or collaboration ideas? Get in touch.</p>
+    </div>
+    <form class="contact-form" action="https://formspree.io/f/xwvnbkgn" method="POST">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required placeholder="What's on your mind?"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<!-- ── Footer ──────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>DAC</h3>
+      <p>Declarative Agent Compilation &mdash; compiling human intent into autonomous AI code execution plans. Open source forever.</p>
+      <div class="social-links">
+        <a href="https://www.linkedin.com/in/mark-hallam/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://x.com/MarkHallam" target="_blank" rel="noopener">X</a>
+        <a href="https://github.com/mark-hallam/markhallam-website" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p>MIT License &bull; Copyright &copy; 2026 Mark Hallam</p>
+      <p>Built with the methodology it describes.</p>
+      <p style="margin-top:8px;"><a href="https://markhallam.com.au" style="color:#93C5FD;">markhallam.com.au</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- ── Scripts ─────────────────────────────────────── -->
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  if (tab === 'prefs') {
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    document.getElementById('tab-prefs').classList.add('active');
+  } else {
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    document.getElementById('tab-global').classList.add('active');
+  }
+}
+
+function copyCode(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelector('.nav-links').classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
