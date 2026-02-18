@@ -393,6 +393,7 @@ footer .footer-legal p {
       <li><a href="#v3">v3 Changes</a></li>
       <li><a href="#comparison">vs Sonnet 4.6</a></li>
       <li><a href="#download">Download</a></li>
+      <li><a href="#case-study">Case Study</a></li>
       <li><a href="#lineage">Lineage</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="https://github.com/mark-hallam/DAC-Declarative-Agent-Compilation" target="_blank" rel="noopener">GitHub</a></li>
@@ -876,6 +877,140 @@ DAC v3.0 leverages both Opus 4.6 and Sonnet 4.6 to optimize cost and quality acr
         <h3>Personal Preferences</h3>
         <p class="meta">Markdown (.md) &bull; v3.0 &bull; February 2026</p>
         <a href="DAC-v3.0-Personal-Preferences.md" class="btn btn-primary" download>Download</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Case Study ─────────────────────────────────── -->
+<section id="case-study">
+  <div class="container">
+    <div class="section-header">
+      <h2>Case Study: Pindeo</h2>
+      <p>A real-world, full-stack application built entirely with DAC (then GYSOM v2) in a single autonomous build.</p>
+    </div>
+
+    <div style="max-width:820px; margin:0 auto;">
+      <p style="font-size:16px; color:var(--body); line-height:1.75; margin-bottom:32px;">
+        Pindeo is a cross-platform social media management tool spanning a Fastify API, Next.js web app, Expo mobile app, and Tauri desktop client with shared packages. The entire codebase &mdash; <strong>510 files</strong>, <strong>~102,000 lines of code</strong>, and <strong>69 commits</strong> &mdash; was compiled and executed autonomously across 4 phases in <strong>49 hours</strong> wall clock time over 3 calendar days. An estimated <strong>~36 million tokens</strong> were generated across the build, equivalent to approximately 180 context windows worth of material. No manual coding. No copy-paste. Just DAC doing what it was designed to do.
+      </p>
+
+      <!-- Highlight stats -->
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; margin-bottom:40px;">
+        <div style="background:var(--blue-pale); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; font-weight:800; color:var(--navy);">49h</div>
+          <div style="font-size:13px; color:var(--muted); font-family:var(--font-ui); margin-top:4px;">Wall Clock</div>
+        </div>
+        <div style="background:var(--blue-pale); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; font-weight:800; color:var(--navy);">510</div>
+          <div style="font-size:13px; color:var(--muted); font-family:var(--font-ui); margin-top:4px;">Files Changed</div>
+        </div>
+        <div style="background:var(--blue-pale); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; font-weight:800; color:var(--navy);">~102K</div>
+          <div style="font-size:13px; color:var(--muted); font-family:var(--font-ui); margin-top:4px;">Lines of Code</div>
+        </div>
+        <div style="background:var(--blue-pale); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; font-weight:800; color:var(--navy);">~36M</div>
+          <div style="font-size:13px; color:var(--muted); font-family:var(--font-ui); margin-top:4px;">Tokens Generated</div>
+        </div>
+      </div>
+
+      <!-- Build breakdown tables -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-bottom:32px;">
+        <!-- By Application -->
+        <div style="background:var(--white); border:1px solid var(--blue-light); border-radius:12px; padding:24px;">
+          <h3 style="font-family:var(--font-ui); font-size:15px; font-weight:700; color:var(--navy); margin-bottom:12px;">By Application</h3>
+          <table style="width:100%; border-collapse:collapse; font-size:14px;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--blue-light);">
+                <th style="text-align:left; padding:6px 8px; color:var(--navy);">App</th>
+                <th style="text-align:right; padding:6px 8px; color:var(--navy);">Files</th>
+                <th style="text-align:right; padding:6px 8px; color:var(--navy);">Lines</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--blue-light);">
+                <td style="padding:6px 8px;">apps/api (Fastify)</td>
+                <td style="padding:6px 8px; text-align:right;">128</td>
+                <td style="padding:6px 8px; text-align:right;">28,110</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--blue-light);">
+                <td style="padding:6px 8px;">apps/web (Next.js)</td>
+                <td style="padding:6px 8px; text-align:right;">138</td>
+                <td style="padding:6px 8px; text-align:right;">19,051</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--blue-light);">
+                <td style="padding:6px 8px;">apps/mobile (Expo)</td>
+                <td style="padding:6px 8px; text-align:right;">35</td>
+                <td style="padding:6px 8px; text-align:right;">6,539</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--blue-light);">
+                <td style="padding:6px 8px;">apps/desktop (Tauri)</td>
+                <td style="padding:6px 8px; text-align:right;">15</td>
+                <td style="padding:6px 8px; text-align:right;">2,936</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 8px;">packages (shared)</td>
+                <td style="padding:6px 8px; text-align:right;">44</td>
+                <td style="padding:6px 8px; text-align:right;">1,558</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- By Phase -->
+        <div style="background:var(--white); border:1px solid var(--blue-light); border-radius:12px; padding:24px;">
+          <h3 style="font-family:var(--font-ui); font-size:15px; font-weight:700; color:var(--navy); margin-bottom:12px;">By Phase</h3>
+          <table style="width:100%; border-collapse:collapse; font-size:14px;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--blue-light);">
+                <th style="text-align:left; padding:6px 8px; color:var(--navy);">Phase</th>
+                <th style="text-align:right; padding:6px 8px; color:var(--navy);">Files</th>
+                <th style="text-align:right; padding:6px 8px; color:var(--navy);">Lines</th>
+                <th style="text-align:right; padding:6px 8px; color:var(--navy);">Commits</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--blue-light);">
+                <td style="padding:6px 8px;">P1 Scaffold</td>
+                <td style="padding:6px 8px; text-align:right;">426</td>
+                <td style="padding:6px 8px; text-align:right;">68,435</td>
+                <td style="padding:6px 8px; text-align:right;">30</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--blue-light);">
+                <td style="padding:6px 8px;">P2 Wiring</td>
+                <td style="padding:6px 8px; text-align:right;">78</td>
+                <td style="padding:6px 8px; text-align:right;">5,132</td>
+                <td style="padding:6px 8px; text-align:right;">8</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--blue-light);">
+                <td style="padding:6px 8px;">P3 Integrations</td>
+                <td style="padding:6px 8px; text-align:right;">72</td>
+                <td style="padding:6px 8px; text-align:right;">17,506</td>
+                <td style="padding:6px 8px; text-align:right;">9</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 8px;">P4 Production</td>
+                <td style="padding:6px 8px; text-align:right;">74</td>
+                <td style="padding:6px 8px; text-align:right;">12,837</td>
+                <td style="padding:6px 8px; text-align:right;">12</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Screenshots -->
+      <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div style="border-radius:12px; overflow:hidden; border:1px solid var(--blue-light);">
+          <img src="Total runtime 49hours.png" alt="Pindeo build total runtime and codebase volume" style="width:100%; display:block;">
+        </div>
+        <div style="border-radius:12px; overflow:hidden; border:1px solid var(--blue-light);">
+          <img src="Largest sessions.png" alt="Largest sessions by lines of code inserted" style="width:100%; display:block;">
+        </div>
+        <div style="border-radius:12px; overflow:hidden; border:1px solid var(--blue-light);">
+          <img src="Token usage 36 million.png" alt="Approximate token usage across build phases" style="width:100%; display:block;">
+        </div>
       </div>
     </div>
   </div>
