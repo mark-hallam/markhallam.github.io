@@ -519,18 +519,9 @@ footer .footer-legal p {
       </div>
     </div>
 
-    <!-- Execution demo -->
-    <div class="exec-demo">
-      <div><span class="comment">// Real execution map: 34 sessions, 8 layers, single entry point, model-routed</span></div>
-      <div><span class="layer">L0:</span> <span class="session">S-01</span> <span class="arrow">&rarr;</span> <span class="session">S-02</span> <span class="model-tag">[Opus|max]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(sequential, foundation)</span></div>
-      <div><span class="layer">L1:</span> <span class="session">S-03</span> <span class="pipe">|</span> <span class="session">S-04</span> <span class="pipe">|</span> <span class="session">S-05</span> <span class="pipe">|</span> <span class="session">S-06</span> <span class="model-tag">[Sonnet|med]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;(4 parallel)</span></div>
-      <div><span class="layer">L2:</span> <span class="session">S-07</span> <span class="pipe">|</span> <span class="session">S-08</span> <span class="pipe">|</span> <span class="session">S-09</span> <span class="model-tag">[Sonnet|med]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3 parallel)</span></div>
-      <div><span class="layer">L3:</span> <span class="session">S-10</span> <span class="pipe">|</span> <span class="session">S-11</span> <span class="pipe">|</span> <span class="session">S-12</span> <span class="pipe">|</span> <span class="session">S-13</span> <span class="pipe">|</span> <span class="session">S-14</span> <span class="model-tag">[mixed]</span> <span class="meta">&nbsp;&nbsp;(5 parallel)</span></div>
-      <div><span class="layer">L4A:</span> <span class="session">S-15</span> <span class="pipe">|</span> <span class="session">S-16</span> <span class="pipe">|</span> <span class="session">S-17</span> <span class="pipe">|</span> <span class="session">S-18</span> <span class="model-tag">[Sonnet|med]</span> <span class="meta">&nbsp;&nbsp;&nbsp;(4 parallel)</span></div>
-      <div><span class="layer">L4B:</span> <span class="session">S-19</span> <span class="arrow">&rarr;</span> <span class="session">S-20</span> <span class="pipe">|</span> <span class="session">S-21</span> <span class="model-tag">[Opus|high]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(integration)</span></div>
-      <div><span class="layer">L5:</span> <span class="session">S-22</span> <span class="pipe">|</span> <span class="session">S-23</span> <span class="pipe">|</span> <span class="session">S-24</span> <span class="pipe">|</span> <span class="session">S-25</span> <span class="pipe">|</span> <span class="session">S-26</span> <span class="pipe">|</span> <span class="session">S-27</span> <span class="pipe">|</span> <span class="session">S-28</span> <span class="model-tag">[Son]</span> <span class="meta">&nbsp;&nbsp;(7 parallel)</span></div>
-      <div><span class="layer">L6:</span> <span class="session">S-29</span> <span class="pipe">|</span> <span class="session">S-30</span> <span class="pipe">|</span> <span class="session">S-31</span> <span class="model-tag">[Opus|high]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3 integration)</span></div>
-      <div><span class="layer">L7:</span> <span class="session">S-32</span> <span class="pipe">|</span> <span class="session">S-33</span> <span class="pipe">|</span> <span class="session">S-34</span> <span class="model-tag">[Opus|low]</span> <span class="meta">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(3 verification)</span></div>
+    <!-- Token usage screenshot -->
+    <div style="max-width:720px; margin:24px auto 0; border-radius:12px; overflow:hidden; border:1px solid var(--blue-light);">
+      <img src="Token usage 36 million.png" alt="Approximate token usage across build phases — ~36 million tokens total" style="width:100%; display:block;">
     </div>
   </div>
 </section>
